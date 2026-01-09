@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Display JSON</title>
+  </head>
+  <body>
+    <h1>Names from backend</h1>
+
+    <p id="status">Loading...</p>
+    <ul id="list"></ul>
+
+    <!-- Axios CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+      "use strict";
+
+      const statusEl = document.getElementById("status");
+      const listEl = document.getElementById("list");
+
+      const load = async () => {
+        try {
+          const res = await axios.get("http://localhost:3000/");
+          const data = res.data; // ["ido","maya","itay"]
+
+          if (!Array.isArray(data)) throw new Error("Expected an array JSON");
+
+          statusEl.textContent = `Loaded ${data.length} items:`;
+
+          listEl.innerHTML = data
+            .map(name => `<li>${String(name)}</li>`)
+            .join("");
+        } catch (err) {
+          statusEl.textContent = `Error: ${err.message}`;
+        }
+      };
+
+      load();
+    </script>
+  </body>
+</html>
