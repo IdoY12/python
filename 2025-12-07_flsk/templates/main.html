@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>קטלוג מוצרים - אופנה בלב</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+        }
+
+        /* Products Section */
+        .products-container {
+            max-width: 1400px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .filters {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 3rem;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .filters h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.7rem 1.5rem;
+            background: #f1f3f5;
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .new-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ff6b6b;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 1;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-category {
+            color: #667eea;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .product-info p {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 1.6rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .buy-btn {
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .buy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">✨ אופנה בלב</div>
+            <ul>
+                <li><a href="/">דף הבית</a></li>
+                <li><a href="/main">מוצרים</a></li>
+                <li><a href="/hello">אודות</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="page-header">
+        <h1>הקטלוג המלא שלנו</h1>
+        <p>מגוון רחב של בגדים איכותיים ומעוצבים במחירים משתלמים</p>
+    </section>
+
+    <div class="products-container">
+        <div class="filters">
+            <h3>סינון לפי קטגוריה</h3>
+            <div class="filter-buttons">
+                <button class="filter-btn">הכל</button>
+                <button class="filter-btn">שמלות</button>
+                <button class="filter-btn">חולצות</button>
+                <button class="filter-btn">מכנסיים</button>
+                <button class="filter-btn">ג'קטים</button>
+                <button class="filter-btn">אביזרים</button>
+            </div>
+        </div>
+
+        <div class="products-grid">
+            <div class="product-card">
+                <span class="new-badge">חדש!</span>
+                <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600" alt="שמלת קיץ" class="product-image">
+                <div class="product-info">
+                    <div class="product-category">שמלות</div>
+                    <h3>שמלת קיץ פרחונית</h3>
+                    <p>שמלה קלילה ונוחה למזג האוויר החם</p>
+                    <div class="product-footer">
+                        <span class="price">₪349</span>
+                        <button class="buy-btn">הוסף לסל</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600" alt="חולצת כפתורים" class="product-image">
+                <div class="product-info">
+                    <div class="product-category">חולצות</div>
+                    <h3>חולצת כפתורים קלאסית</h3>
+                    <p>מושלמת למשרד ולאירועים</p>
+                    <div class="product-footer">
+                        <span class="price">₪199</span>
+                        <button class="buy-btn">הוסף לסל</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="new-badge">חדש!</span>
+                <img src="https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600" alt="מכנסי ג'ינס" class="product-image">
+                <div class="product-info">
+                    <div class="product-category">מכנסיים</div>
+                    <h3>ג'ינס בגזרה גבוהה</h3>
+                    <p>נוח, אופנתי ואיכותי</p>
+                    <div class="product-footer">
+                        <span class="price">₪399</span>
+                        <button class="buy-btn">הוסף לסל</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600" alt="ג'קט ג'ינס" class="product-image">
+                <div class="product-info">
+                    <div class="product-category">ג'קטים</div>
+                    <h3>ג'קט ג'ינס מודרני</h3>
+                    <p>שכבת ביניים מושלמת</p>
+                    <div class="product-footer">
+                        <span class="price">₪549</span>
+                        <button class="buy-btn">הוסף לסל</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=600" alt="סווטשירט" class="product-image">
+                <div class="product-info">
+                    <div class="product-category">חולצות</div>
+                    <h3>סווטשירט אוברסייז</h3>
+                    <p>נוחות מקסימלית בסטייל</p>
+                    <div class="product-footer">
+                        <span class="price">₪279</span>
+                        <button class="buy-btn">הוסף לסל</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <span class="new-badge">חדש!</span>
+                <img src="https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600" alt="שמלת ערב" class="product-image">
+                <div class="product-info">
+                    <div class="product-category">שמלות</div>
+                    <h3>שמלת ערב שחורה</h3>
+                    <p>אלגנטיות מושלמת לאירועים</p>
+                    <div class="product-footer">
+                        <span class="price">₪699</span>
+                        <button class="buy-btn">הוסף לסל</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1578932750294-f5075e85f44a?w=600" alt="חולצת טי" class="product-image">
+                <div class="product-info">
+                    <div class="product-category">חולצות</div>
+                    <h3>חולצת טי בייסיק</h3>
+                    <p>חיוני בארון הבגדים</p>
+                    <div class="product-footer">
+                        <span class="price">₪129</span>
+                        <button class="buy-btn">הוסף לסל</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=600" alt="מעיל חורף" class="product-image">
+                <div class="product-info">
+                    <div class="product-category">ג'קטים</div>
+                    <h3>מעיל חורף מרופד</h3>
+                    <p>חמים ואופנתי לימי החורף</p>
+                    <div class="product-footer">
+                        <span class="price">₪849</span>
+                        <button class="buy-btn">הוסף לסל</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600" alt="נעלי ספורט" class="product-image">
+                <div class="product-info">
+                    <div class="product-category">אביזרים</div>
+                    <h3>נעלי ספורט אופנתיות</h3>
+                    <p>נוחות וסטייל במוצר אחד</p>
+                    <div class="product-footer">
+                        <span class="price">₪449</span>
+                        <button class="buy-btn">הוסף לסל</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 אופנה בלב - כל הזכויות שמורות | עיצוב ופיתוח מקצועי</p>
+    </footer>
+</body>
+</html>
