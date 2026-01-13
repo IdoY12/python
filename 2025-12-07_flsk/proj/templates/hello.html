@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}hello world!{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important {
+        color: #00ff15;
+        background: #000;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <h1>About</h1>
+  <h1 class="important">
+    hello world!
+  </h1>
+{% endblock %}
