@@ -37,9 +37,9 @@
 
         tasks.forEach(task => {
           const li = document.createElement('li')
-          li.textContent = `1st ${task} - `
+          li.textContent = `1st ${task} -`
           list.appendChild(li)
-          li.innerHTML = `second ${task}`
+          li.innerHTML += `<br> second ${task}`
         })
       })
       .catch(error => {
