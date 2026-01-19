@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask SQLite POST Example</title>
+    <style>
+        li { margin-bottom: 10px; list-style: none; display: flex; gap: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Task Manager</h2>
+
+    <form method="POST" action="/">
+        <input type="text" name="content" placeholder="Enter task..." required>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <hr>
+
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task.content }}
+                <form action="{{ url_for('delete', id=task.id) }}" method="POST">
+                    <button type="submit" style="color: red;">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
