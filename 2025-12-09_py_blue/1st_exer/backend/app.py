@@ -4,7 +4,11 @@ from blueprints.sport import sport_bp
 from blueprints.news import news_bp
 from blueprints.economics import economics_bp
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder="../frontend/templates",
+    static_folder="../frontend/static"
+)
 
 # Registering Blueprints
 app.register_blueprint(sport_bp)

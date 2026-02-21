@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+<form method="POST">
+    <label>Title:
+        <input type="text" name="title" required>
+    </label>
+    <label>Content:
+        <textarea name="content" required></textarea>
+    </label>
+    <label>{{ extra_label }}:
+        <input type="text" name="{{ extra_field }}" required>
+    </label>
+    <button type="submit">Save</button>
+</form>
+{% endblock %}
