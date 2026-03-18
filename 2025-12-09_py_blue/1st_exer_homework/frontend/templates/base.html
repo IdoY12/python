@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title>Flask News App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('home') }}">🏠 Home</a>
+        <a href="{{ url_for('sport.index') }}">⚽ Sport</a>
+        <a href="{{ url_for('news.index') }}">📰 News</a>
+        <a href="{{ url_for('economics.index') }}">💹 Economics</a>
+        <a href="{{ url_for('tech.index') }}">💻 Technology</a>
+
+        <!-- current_user מגיע מ-Flask-Login אוטומטית לכל תבנית ללא צורך להעביר אותו ידנית -->
+        {% if current_user.is_authenticated %}
+            <!-- הצגת שם המשתמש ותפקידו -->
+            <span>👤 {{ current_user.username }}
+                {% if current_user.is_admin %}(Admin){% endif %}
+            </span>
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% else %}
+            <!-- אם לא מחובר - הצגת לינקים להתחברות והרשמה -->
+            <a href="{{ url_for('auth.login') }}">Login</a>
+            <a href="{{ url_for('auth.register') }}">Register</a>
+        {% endif %}
+    </nav>
+
+    <main>
+        <!-- הצגת הודעות flash - get_flashed_messages מגיע מ-Flask אוטומטית -->
+        <!-- with_categories=true מאפשר לנו לדעת אם זו הודעת success או error -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <!-- class="flash error" או class="flash success" לעיצוב שונה -->
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

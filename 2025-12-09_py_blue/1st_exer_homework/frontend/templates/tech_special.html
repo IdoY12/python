@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="text-align: center; background-color: #f0f8ff; padding: 40px; border-radius: 20px; border: 3px dashed #ff4500;">
+    <h1 style="color: #ff4500; font-size: 3.5rem; animation: bounce 2s infinite; margin-bottom: 10px;">
+        We added a Blueprint! 🥳
+    </h1>
+    <h2 style="color: #2e8b57; font-size: 2rem;">
+        Hurray! Fun, Joy, and Celebrations!
+    </h2>
+    <p style="font-size: 1.2rem; color: #555;">
+        This page is powered by a dedicated Blueprint and a custom HTML template.
+    </p>
+    <hr style="border: 1px solid #ff4500; width: 50%; margin: 30px auto;">
+
+    <div class="articles" style="margin-top: 30px;">
+        <h3 style="text-decoration: underline;">Live Data from Database:</h3>
+        {% for article in articles %}
+            <div class="article-card" style="background: white; border: 2px solid #ff4500; margin: 15px auto; padding: 20px; max-width: 600px; border-radius: 10px; box-shadow: 5px 5px 15px rgba(0,0,0,0.1);">
+                <!-- לינק למאמר הבודד + גישת ORM עם נקודה במקום סוגריים מרובעים -->
+                <h3><a href="{{ url_for('tech.detail', article_id=article.id) }}" style="color: #ff4500;">{{ article.title }}</a></h3>
+                <p>{{ article.content }}</p>
+                <!-- עכשיו מציג tech_field מטבלת tech_articles האמיתית ולא sector מ-economics -->
+                <mark style="background-color: #ffd700; padding: 5px;">Field: {{ article.tech_field }}</mark>
+
+                <!-- כפתורי עריכה ומחיקה - רק לאדמין מחובר -->
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                    <div style="margin-top: 10px;">
+                        <a href="{{ url_for('tech.edit', article_id=article.id) }}">✏️ Edit</a>
+                        <!-- DELETE חייב להיות POST -->
+                        <form method="POST" action="{{ url_for('tech.delete', article_id=article.id) }}" style="display:inline;">
+                            <button type="submit" onclick="return confirm('Delete?')">🗑️ Delete</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div style="padding: 20px; background: #fff3cd; border-radius: 10px; display: inline-block;">
+                <p style="font-weight: bold; color: #856404;">No tech articles yet! 💃</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- כפתור הוספה - רק לאדמין מחובר -->
+    {% if current_user.is_authenticated and current_user.is_admin %}
+        <div style="margin-top: 40px;">
+            <a href="{{ url_for('tech.add') }}" class="btn" style="background-color: #ff4500; color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 1.2rem;">
+                + Add Tech Article
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+        40% {transform: translateY(-30px);}
+        60% {transform: translateY(-15px);}
+    }
+    .btn:hover {
+        background-color: #e03e00 !important;
+        box-shadow: 0px 4px 15px rgba(255, 69, 0, 0.4);
+    }
+</style>
+{% endblock %}

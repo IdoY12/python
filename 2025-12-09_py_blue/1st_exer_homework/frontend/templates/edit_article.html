@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Edit Article</h1>
+
+<form method="POST">
+    <label>Title:
+        <!-- value="{{ article.title }}" ממלא את השדה עם הכותרת הקיימת לעריכה -->
+        <input type="text" name="title" value="{{ article.title }}" required>
+    </label>
+    <label>Content:
+        <!-- תוכן הטקסט נכנס בין תגי textarea ולא כ-value -->
+        <textarea name="content" required>{{ article.content }}</textarea>
+    </label>
+    <label>{{ extra_label }}:
+        <!-- extra_field הוא שם השדה הייחודי - sport_type / source / sector / tech_field -->
+        <!-- article[extra_field] - גישה דינמית לשדה לפי שמו -->
+        <input type="text" name="{{ extra_field }}" value="{{ article[extra_field] }}" required>
+    </label>
+    <button type="submit">Save Changes</button>
+</form>
+
+<!-- לינק לביטול חזרה לדף המאמר -->
+<a href="{{ url_for(category + '.detail', article_id=article.id) }}">← Cancel</a>
+
+{% endblock %}

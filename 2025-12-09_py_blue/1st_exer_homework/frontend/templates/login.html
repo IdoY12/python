@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Login</h1>
+
+<!-- method="POST" שולח את הנתונים בצורה מאובטחת לראוט /auth/login -->
+<form method="POST">
+    <label>Username:
+        <input type="text" name="username" required>
+    </label>
+    <label>Password:
+        <!-- type="password" מסתיר את התווים בהקלדה -->
+        <input type="password" name="password" required>
+    </label>
+    <button type="submit">Login</button>
+</form>
+
+<!-- לינק למי שעוד לא נרשם -->
+<p>No account? <a href="{{ url_for('auth.register') }}">Register here</a></p>
+{% endblock %}

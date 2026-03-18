@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<a href="{{ url_for(category + '.index') }}">← Back</a>
+
+<!-- article.title במקום article['title'] - גישת ORM -->
+<h1>{{ article.title }}</h1>
+<p class="content">{{ article.content }}</p>
+<p><strong>ID:</strong> {{ article.id }}</p>
+
+<!-- כפתורי עריכה ומחיקה - רק לאדמין מחובר -->
+{% if current_user.is_authenticated and current_user.is_admin %}
+    <a href="{{ url_for(category + '.edit', article_id=article.id) }}">✏️ Edit</a>
+    <!-- DELETE חייב להיות POST - לא GET -->
+    <form method="POST" action="{{ url_for(category + '.delete', article_id=article.id) }}" style="display:inline;">
+        <button type="submit" onclick="return confirm('Delete this article?')">🗑️ Delete</button>
+    </form>
+{% endif %}
+
+{% endblock %}

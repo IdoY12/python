@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- ללא שינוי מהמקור - עובד מצוין עם הקוד החדש -->
+<h1>{{ title }}</h1>
+<form method="POST">
+    <label>Title:
+        <input type="text" name="title" required>
+    </label>
+    <label>Content:
+        <textarea name="content" required></textarea>
+    </label>
+    <!-- extra_label ו-extra_field מגיעים מהבלופרינט - sport_type / source / sector / tech_field -->
+    <label>{{ extra_label }}:
+        <input type="text" name="{{ extra_field }}" required>
+    </label>
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

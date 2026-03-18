@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+
+<!-- כפתור הוספה מוצג רק לאדמין מחובר -->
+{% if current_user.is_authenticated and current_user.is_admin %}
+    <a href="{{ url_for(category + '.add') }}" class="btn">+ Add Article</a>
+{% endif %}
+
+<div class="articles">
+    {% for article in articles %}
+    <div class="article-card">
+        <!-- article.title במקום article['title'] - כך עובד ORM, גישה כ-attribute ולא כ-dict -->
+        <h3><a href="{{ url_for(category + '.detail', article_id=article.id) }}">{{ article.title }}</a></h3>
+        <p>{{ article.content[:100] }}...</p>
+
+        <!-- כפתורי עריכה ומחיקה - רק לאדמין -->
+        {% if current_user.is_authenticated and current_user.is_admin %}
+            <a href="{{ url_for(category + '.edit', article_id=article.id) }}">✏️ Edit</a>
+            <!-- מחיקה חייבת להיות POST ולא GET - GET אמור להיות בטוח ולא לשנות נתונים -->
+            <form method="POST" action="{{ url_for(category + '.delete', article_id=article.id) }}" style="display:inline;">
+                <button type="submit" onclick="return confirm('Delete this article?')">🗑️ Delete</button>
+            </form>
+        {% endif %}
+    </div>
+    {% else %}
+    <p>No articles yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}
