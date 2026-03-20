@@ -28,7 +28,7 @@ DEBUG = True
 
 # ALLOWED_HOSTS: Checks if the request is allowed to reach MY server address (the Host). (Is the request authorized to access my address?).
 # CORS_ALLOWED_ORIGINS: Checks if I recognize and trust the website (the Origin) making the request. (Do I know the address that is talking to me?).
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
