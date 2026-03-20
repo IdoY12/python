@@ -12,3 +12,7 @@ def index(req):
 @api_view(['GET'])
 def ido_was_here(req):
     return Response('ido_was_here')
+
+@api_view(['GET'])
+def test(req):
+    return Response({'username': 'waga', 'age': 3})

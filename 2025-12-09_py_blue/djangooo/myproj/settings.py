@@ -25,6 +25,9 @@ SECRET_KEY = 'django-insecure-+)%=qk2gir)&q#&6je&6bq&e!hm(j&=l^=c#7l1k4*v^5wt9g+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+# ALLOWED_HOSTS: Checks if the request is allowed to reach MY server address (the Host). (Is the request authorized to access my address?).
+# CORS_ALLOWED_ORIGINS: Checks if I recognize and trust the website (the Origin) making the request. (Do I know the address that is talking to me?).
 ALLOWED_HOSTS = []
 
 
@@ -40,10 +43,13 @@ INSTALLED_APPS = [
     'base',
     'users',
     'rest_framework',
+    'corsheaders',
+
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -51,6 +57,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#     "http://127.0.0.1:5173",
+# ]
 
 ROOT_URLCONF = 'myproj.urls'
 
@@ -117,4 +130,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+
+STATIC_URL = '/static/'
+MEDIA_URL = '/images/'
+
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+   ]
+
+
+MEDIA_ROOT = BASE_DIR / 'static/images'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
