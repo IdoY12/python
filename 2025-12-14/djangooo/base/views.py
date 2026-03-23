@@ -114,3 +114,4 @@ def register_user(request):
     
     # If not valid, return the errors (e.g., "This username is already taken")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

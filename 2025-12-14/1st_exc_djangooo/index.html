@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Photo Gallery</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f5;
+      color: #111;
+      min-height: 100vh;
+    }
+
+    nav {
+      background: #fff;
+      border-bottom: 1px solid #e4e4e7;
+      padding: 0 2rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    nav .logo { font-size: 16px; font-weight: 600; }
+    nav .nav-right { display: flex; align-items: center; gap: 12px; }
+    nav .username { font-size: 14px; color: #71717a; }
+    nav button {
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid #e4e4e7;
+      background: #fff;
+      cursor: pointer;
+      color: #111;
+    }
+    nav button:hover { background: #f4f4f5; }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    #screen-login {
+      display: none;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      background: #f4f4f5;
+    }
+    #screen-login.active { display: flex; }
+
+    .login-card {
+      background: #fff;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 380px;
+    }
+    .login-card h2 { font-size: 20px; font-weight: 600; margin-bottom: 1.75rem; }
+
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: 13px; color: #71717a; margin-bottom: 6px; }
+    .field input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus { border-color: #a1a1aa; }
+
+    .btn-main {
+      width: 100%;
+      padding: 10px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: opacity 0.15s;
+    }
+    .btn-main:hover { opacity: 0.85; }
+    .btn-main:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .err { font-size: 13px; color: #ef4444; margin-top: 0.75rem; min-height: 18px; }
+
+    #screen-gallery { padding: 0; }
+
+    .upload-section {
+      background: #fff;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .upload-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 1rem; }
+
+    .drop-zone {
+      border: 2px dashed #d4d4d8;
+      border-radius: 10px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .drop-zone:hover, .drop-zone.over { border-color: #a1a1aa; background: #fafafa; }
+    .drop-zone p { font-size: 14px; color: #71717a; margin-top: 0.5rem; }
+    .drop-zone span { font-size: 12px; color: #a1a1aa; }
+    .drop-icon { font-size: 28px; }
+
+    #file-input { display: none; }
+
+    .preview-row {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    .preview-row.visible { display: flex; }
+    .preview-row img { width: 52px; height: 52px; object-fit: cover; border-radius: 6px; border: 1px solid #e4e4e7; }
+    .preview-info { flex: 1; }
+    .preview-info .pname { font-size: 13px; font-weight: 500; }
+    .preview-info .psize { font-size: 12px; color: #71717a; }
+    .btn-upload {
+      padding: 8px 18px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s;
+    }
+    .btn-upload:hover { opacity: 0.85; }
+    .btn-upload:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .status { font-size: 13px; margin-top: 0.75rem; min-height: 18px; }
+    .status.ok { color: #16a34a; }
+    .status.fail { color: #ef4444; }
+
+    .photos-section h3 { font-size: 15px; font-weight: 600; margin-bottom: 1rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .photo-card {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #e4e4e7;
+      background: #fff;
+      aspect-ratio: 1;
+      position: relative;
+    }
+    .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .photo-card .date {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      font-size: 11px;
+      color: #71717a;
+      background: rgba(255,255,255,0.92);
+      padding: 5px 8px;
+      border-top: 1px solid #e4e4e7;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 3rem;
+      color: #a1a1aa;
+      font-size: 14px;
+      border: 1px dashed #e4e4e7;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="screen-login" class="screen active">
+  <div class="login-card">
+    <h2>Sign in</h2>
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="login-user" placeholder="your username" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="••••••••" />
+    </div>
+    <button class="btn-main" onclick="login()">Sign in</button>
+    <p class="err" id="login-err"></p>
+  </div>
+</div>
+
+<div id="screen-gallery" class="screen">
+  <nav>
+    <span class="logo">Photo Gallery</span>
+    <div class="nav-right">
+      <span class="username" id="nav-user"></span>
+      <button onclick="logout()">Sign out</button>
+    </div>
+  </nav>
+
+  <div style="max-width: 900px; margin: 0 auto; padding: 2rem 1rem;">
+    <div class="upload-section">
+      <h3>Upload a photo</h3>
+      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+        <div class="drop-icon">&#128444;</div>
+        <p>Click or drag a photo here</p>
+        <span>PNG, JPG, WEBP</span>
+      </div>
+      <input type="file" id="file-input" accept="image/*" onchange="onFileSelect(event)" />
+
+      <div class="preview-row" id="preview-row">
+        <img id="preview-img" src="" alt="" />
+        <div class="preview-info">
+          <div class="pname" id="preview-name"></div>
+          <div class="psize" id="preview-size"></div>
+        </div>
+        <button class="btn-upload" id="btn-upload" onclick="uploadPhoto()">Upload</button>
+      </div>
+      <p class="status" id="upload-status"></p>
+    </div>
+
+    <div class="photos-section">
+      <h3>My photos</h3>
+      <div class="grid" id="photo-grid"></div>
+      <div class="empty" id="empty-state" style="display:none">No photos yet.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API = 'http://127.0.0.1:8000';
+  let token = null;
+  let selectedFile = null;
+
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+  }
+
+  function setStatus(msg, type) {
+    const el = document.getElementById('upload-status');
+    el.textContent = msg;
+    el.className = 'status ' + (type || '');
+  }
+
+  // restore session on page load
+  function init() {
+    const saved = sessionStorage.getItem('token');
+    const savedUser = sessionStorage.getItem('username');
+    if (saved) {
+      token = saved;
+      document.getElementById('nav-user').textContent = savedUser || '';
+      showScreen('gallery');
+      loadPhotos();
+    }
+  }
+
+  async function login() {
+    const username = document.getElementById('login-user').value.trim();
+    const password = document.getElementById('login-pass').value;
+    const errEl = document.getElementById('login-err');
+    errEl.textContent = '';
+
+    if (!username || !password) { errEl.textContent = 'Please fill in both fields.'; return; }
+
+    try {
+      const res = await fetch(API + '/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (!res.ok) { errEl.textContent = data.detail || 'Invalid credentials.'; return; }
+
+      token = data.access;
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('username', username);
+
+      document.getElementById('nav-user').textContent = username;
+      showScreen('gallery');
+      loadPhotos();
+    } catch {
+      errEl.textContent = 'Could not connect to server.';
+    }
+  }
+
+  function logout() {
+    token = null;
+    selectedFile = null;
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('username');
+    document.getElementById('preview-row').classList.remove('visible');
+    document.getElementById('photo-grid').innerHTML = '';
+    document.getElementById('login-user').value = '';
+    document.getElementById('login-pass').value = '';
+    showScreen('login');
+  }
+
+  function onFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('preview-img').src = ev.target.result;
+      document.getElementById('preview-name').textContent = file.name;
+      document.getElementById('preview-size').textContent = (file.size / 1024).toFixed(0) + ' KB';
+      document.getElementById('preview-row').classList.add('visible');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function uploadPhoto() {
+    if (!selectedFile) return;
+    const btn = document.getElementById('btn-upload');
+    btn.disabled = true;
+    btn.textContent = 'Uploading...';
+    setStatus('');
+
+    const formData = new FormData();
+    formData.append('image', selectedFile);
+
+    try {
+      const res = await fetch(API + '/photos/upload', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+        body: formData
+      });
+      const data = await res.json();
+      if (!res.ok) { setStatus(data.error || 'Upload failed.', 'fail'); return; }
+      setStatus('Photo uploaded successfully.', 'ok');
+      document.getElementById('preview-row').classList.remove('visible');
+      selectedFile = null;
+      document.getElementById('file-input').value = '';
+      loadPhotos();
+    } catch {
+      setStatus('Could not connect to server.', 'fail');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Upload';
+    }
+  }
+
+  async function loadPhotos() {
+    try {
+      const res = await fetch(API + '/my-photos', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+      if (!res.ok) return;
+      renderPhotos(data);
+    } catch {}
+  }
+
+  function renderPhotos(items) {
+    const grid = document.getElementById('photo-grid');
+    const empty = document.getElementById('empty-state');
+    grid.innerHTML = '';
+    if (!items.length) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    items.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'photo-card';
+      const date = new Date(p.uploaded_at).toLocaleDateString();
+      card.innerHTML = `<img src="${API + p.image}" alt="photo" /><div class="date">${date}</div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  const dropZone = document.getElementById('drop-zone');
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        document.getElementById('preview-img').src = ev.target.result;
+        document.getElementById('preview-name').textContent = file.name;
+        document.getElementById('preview-size').textContent = (file.size / 1024).toFixed(0) + ' KB';
+        document.getElementById('preview-row').classList.add('visible');
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  init();
+</script>
+</body>
+</html>
