@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>API Test</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+  <style>
+    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px; }
+    button { padding: 10px 24px; font-size: 16px; cursor: pointer; }
+    pre { margin-top: 20px; background: #f4f4f4; padding: 16px; border-radius: 6px; min-width: 300px; }
+  </style>
+</head>
+<body>
+  <h2>API Test</h2>
+  <button onclick="callApi()">Call /test</button>
+  <pre id="result">Result will appear here...</pre>
+
+  <script>
+    async function callApi() {
+      const el = document.getElementById('result');
+      el.textContent = 'Loading...';
+      try {
+        const res = await axios.get('http://127.0.0.1:8000/test');
+        el.textContent = JSON.stringify(res.data, null, 2);
+      } catch (err) {
+        el.textContent = 'Error: ' + (err.message || err);
+      }
+    }
+  </script>
+</body>
+</html>

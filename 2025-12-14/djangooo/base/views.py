@@ -9,32 +9,56 @@ from rest_framework import permissions
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer   # --> Login
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import Order, OrderItem, Product
+from django.db import transaction
 
-
-# inside a view
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_order(req):
     items = req.data.get('items', [])
 
     if not items:
-        print('we in: if not items: line 20 views.py base.urls')
         return Response({'error': 'No items provided'}, status=400)
 
-    order = Order.objects.create(user=req.user)
+    with transaction.atomic():
+        order = Order.objects.create(user=req.user)
 
-    for item in items:
-        product = get_object_or_404(Product, id=item['product_id'])
-        OrderItem.objects.create(
-            order=order,
-            product=product,
-            quantity=item.get('quantity', 1),
-            price=product.price
-        )
+        for item in items:
+            product = get_object_or_404(Product, id=item['product_id'])
+            OrderItem.objects.create(
+                order=order,
+                product=product,
+                quantity=item.get('quantity', 1),
+                price=product.price
+            )
 
     return Response({'order_id': order.id, 'status': order.status}, status=201)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_my_orders(req):
+    orders = Order.objects.filter(user=req.user)
+    
+    data = []
+    for order in orders:
+        data.append({
+            'order_id': order.id,
+            'status': order.status,
+            'created_at': order.created_at,
+            'items': [
+                {
+                    'product': item.product.desc,
+                    'quantity': item.quantity,
+                    'price': item.price,
+                }
+                for item in order.items.all()
+            ]
+        })
+
+    return Response(data)
+
+
+# return jwt to user
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -71,6 +95,7 @@ def private_mem(req):
     return Response({'Welcome': user.email})
 
 
+# DRF create user in the table for us
 @api_view(['POST'])
 def register_user(request):
     # Initialize the serializer with the incoming data from the request

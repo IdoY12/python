@@ -9,6 +9,7 @@ urlpatterns = [
     path('test', views.test),
     path('private', views.private_mem),
     path('buy', views.create_order),
+    path('my-orders', views.get_my_orders),
     # path('login',TokenObtainPairView.as_view() ),
     path('login',views.MyTokenObtainPairView.as_view() ),
     # Adding the signup endpoint here
