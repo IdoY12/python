@@ -16,6 +16,7 @@ class Product(models.Model):
     image = models.ImageField(null=True, blank=True, default='/placeholder.png')
     createdTime = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.desc} - {self.price} NIS"

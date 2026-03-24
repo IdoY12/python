@@ -1,17 +1,29 @@
-from django.contrib import admin
 from django.urls import path
 from . import views
-from rest_framework_simplejwt.views import TokenObtainPairView   # --> Login
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 urlpatterns = [
-    path('hello', views.index),
-    path('ido_was_here', views.ido_was_here),
-    path('test', views.test),
-    path('private', views.private_mem),
-    path('buy', views.create_order),
+    # ── Auth ──────────────────────────────────────────────────────────────────
+    path('login',   views.MyTokenObtainPairView.as_view()),
+    path('signup',  views.register_user),
+
+    # ── Image upload ──────────────────────────────────────────────────────────
+    path('upload-image', views.upload_image),         # POST  (multipart)
+
+    # ── Products ──────────────────────────────────────────────────────────────
+    path('products',        views.products_list_create),   # GET / POST
+    path('products/<int:pk>', views.product_detail),       # GET / PUT / DELETE
+
+    # ── Categories ────────────────────────────────────────────────────────────
+    path('categories',      views.categories_list_create), # GET / POST
+
+    # ── Orders ────────────────────────────────────────────────────────────────
+    path('buy',       views.create_order),
     path('my-orders', views.get_my_orders),
-    # path('login',TokenObtainPairView.as_view() ),
-    path('login',views.MyTokenObtainPairView.as_view() ),
-    # Adding the signup endpoint here
-    path('signup', views.register_user),
+
+    # ── Misc (original) ───────────────────────────────────────────────────────
+    path('hello',        views.index),
+    path('ido_was_here', views.ido_was_here),
+    path('test',         views.test),
+    path('private',      views.private_mem),
 ]
